@@ -41,14 +41,15 @@
     timeline.push(instructions);
 
 
-    function get_stims(json){
+    // function to get stimulus image paths for study phase
+    function get_stims_study(json){
       var listy = []
       for (var i = 0; i<json.length; i++){
         var stimuli_from_json = {
-          "face" : json[i].Directory + json[i].Filename,
+          "display" : json[i].Directory + json[i].ImageName + json[i].StartLevel + json[i].ImgType,
         };
         console.log(stimuli_from_json)
-        if (json[i].EncodedImage == "yes"){
+        if (json[i].Phase == "Study"){
           listy.push(stimuli_from_json);
         }
       }
@@ -56,9 +57,10 @@
       return listy;
     }
 
-    var stims_json = get_stims(jsonfile);
+    // list of stimulus objects with image paths 
+    var stims_json = get_stims_study(jsonfile);
 
-    /* Display faces for perception tests */
+    /* Display images for perception tests */
     var face_display_perception = {
         timeline: [
             {
@@ -71,43 +73,86 @@
             {
                 type: 'html-keyboard-response',
                 stimulus: function(){
-                    var html="<img src='"+jsPsych.timelineVariable('face', true)+"'>";
+                    var html="<img src='"+jsPsych.timelineVariable('display', true)+"'>";
                     return html;
                 },          
                 choices: jsPsych.NO_KEYS,
                 trial_duration: 4000
             }
         ],
-        timeline_variables: [
-            { face: "img/testimgs/test1.jpg"},
-            { face: "img/testimgs/test2.jpg"},
-            { face: "img/testimgs/test3.jpg"},
-            { face: "img/testimgs/test4.jpg"},
-            { face: "img/testimgs/test5.jpg"},
-            { face: "img/testimgs/coci.jpg"}
-        ]
+        // timeline_variables: test_stim
+        timeline_variables : stims_json
     }
     timeline.push(face_display_perception)
 
-    var slider_1 = {
-    type: 'html-slider-response',
-    stimulus: '<p>Running</p>',
-    labels: ['healthy', 'unhealthy'],
-    prompt: "<p>How healthy/unhealthy is this activity?</p>"
-    };
-    timeline.push(slider_1);
+    // blank screen for test image preload 
+    var pause_for_img_preload = {
+        timeline: [
+            {
+                type: 'html-keyboard-response',
+                stimulus: 'TEST PHASE',
+                choices: jsPsych.NO_KEYS,
+                trial_duration: 1000
+            }
+        ]
+    }
+    timeline.push(pause_for_img_preload)
 
-    // var slider_1_2 ={
-    //   type: 'html-slider-respose'
-    // }
-    var slider2 = {
-    type: 'image-slider-response',
-    stimulus: 'img/testimgs/test1.jpg',
-    labels: ['happy', 'sad'],
-    prompt: "<p>How happy/sad is this person?</p>",
-    response_ends_trial: false
-    };
-    timeline.push(slider2);
+    // function that returns list of stimulus objects with image paths for test phase 
+    function get_stims_test(json){
+      var big_listy = []
+      for (var i = 0; i<json.length; i++){
+        for (var b = 0; b<json.length; b++){
+          var small_listy = []
+          var stimuli_from_json = {
+            "display" : json[i].Directory + json[i].ImageName + b + json[i].ImgType
+          };
+          small_listy.push(stimuli_from_json)
+        }
+        console.log(stimuli_from_json)
+        big_listy.push(small_listy)
+      }
+      console.log(big_listy)
+      return big_listy;
+    }
+
+    // list of stimulus objects with image file paths ... contains embedded arrays of stimulus objects, one embedded array of all stimuli paths per tested image
+    var slider_stim = get_stims_test(jsonfile)
+    
+    // preload images 
+    var image_paths_for_preload =  function(){
+      var listylist = []
+      for (var i = 0; i<slider_stim.length; i++){
+        for (var b = 0; b<slider_stim[i].length; b++){
+          listylist.push(slider_stim[i][b].display)
+          console.log(slider_stim[i][b].display)
+        }
+      }
+      console.log(listylist)
+      return listylist
+    }
+    var n_loaded = 0;
+    jsPsych.pluginAPI.preloadImages(image_paths_for_preload, function(){ testFunc(); }, function(file) { updateLoadedCount(file); });
+
+    function testFunc(){
+      console.log("done loading");
+    }
+
+    function updateLoadedCount(file){
+        n_loaded++;
+        var percentcomplete = n_loaded / image_paths_for_preload.length * 100;
+        console.log('Loaded '+percentcomplete+'% of images');
+    }
+
+    // // test phase
+    // var slider2 = {
+    // type: 'image-slider-response',
+    // stimulus: 'img/testimgs/test1.jpg',
+    // labels: ['happy', 'sad'],
+    // prompt: "<p>How happy/sad is this person?</p>",
+    // response_ends_trial: false
+    // };
+    // timeline.push(slider2);
 
     /* start the experiment */
     jsPsych.init({

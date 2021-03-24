@@ -1,4 +1,5 @@
-StimID,Directory,ImageName,TrialNumber,Block,StartLevel,Phase
-1,,People_101_h,1,1,4,
-2,,People_157_h,2,1,9,
-3,,People_177_h,3,1,2,
+StimID,Directory,ImageName,TrialNumber,Block,StartLevel,Phase,ImgType
+1,image_examples/,People_101_h_,1,1,4,Study,.png
+2,image_examples/,People_157_h_,2,1,9,Study,.png
+3,image_examples/,People_177_h_,3,1,2,Study,.png
+4,image_examples/,Coco_,4,1,1,Test,.png

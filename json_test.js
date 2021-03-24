@@ -1,145 +1,56 @@
-// // require csvtojson module
-// const CSVToJSON = require('csvtojson');
-
-
-// // convert users.csv file to JSON array
-// CSVToJSON().fromFile('InstaMem_sample.csv')
-//     .then(users => {
-
-//         // users is a JSON array
-//         // log the JSON array
-//         console.log(users);
-//         jsonfile = users;
-//     }).catch(err => {
-//         // log error if any
-//         console.log(err);
-//     });
-
 var jsonfile = [
-    {
-      "TrialNumber": 1,
-      "EncodedImage": "yes",
-      "Directory": "img/testimgs/",
-      "Filename": "test1.jpg",
-      "Condition": "Memory",
-      "MemoryProbe": "Lure",
-      "ExpressionIntensity": 26,
-      "TestImage": "yes",
-      "ActorGender": "Male",
-      "ActorRace": "Other",
-      "ActorID": "test1",
-      "FacialExpression1": "neutral",
-      "FacialExpression2": "happy_closed",
-      "Block": 1
-    },
-    {
-      "TrialNumber": 1,
-      "EncodedImage": "no",
-      "Directory": "img/testimgs/",
-      "Filename": "orange.jpg",
-      "Condition": "Memory",
-      "MemoryProbe": "Lure",
-      "ExpressionIntensity": 4,
-      "TestImage": "no",
-      "ActorGender": "shape",
-      "ActorRace": "circle",
-      "ActorID": "orange",
-      "FacialExpression1": "neutral",
-      "FacialExpression2": "happy_closed",
-      "Block": 1
-    },
-    {
-      "TrialNumber": 1,
-      "EncodedImage": "yes",
-      "Directory": "img/testimgs/",
-      "Filename": "test2.jpg",
-      "Condition": "Memory",
-      "MemoryProbe": "Lure",
-      "ExpressionIntensity": 15,
-      "TestImage": "yes",
-      "ActorGender": "Female",
-      "ActorRace": "Caucasian",
-      "ActorID": "test2",
-      "FacialExpression1": "neutral",
-      "FacialExpression2": "happy_closed",
-      "Block": 1
-    },
-    {
-      "TrialNumber": 1,
-      "EncodedImage": "yes",
-      "Directory": "img/testimgs/",
-      "Filename": "test3.jpg",
-      "Condition": "Memory",
-      "MemoryProbe": "Lure",
-      "ExpressionIntensity": 3,
-      "TestImage": "yes",
-      "ActorGender": "Male",
-      "ActorRace": "Caucasian",
-      "ActorID": "test3",
-      "FacialExpression1": "neutral",
-      "FacialExpression2": "happy_closed",
-      "Block": 1
-    },
-    {
-      "TrialNumber": 1,
-      "EncodedImage": "no",
-      "Directory": "img/testimgs/",
-      "Filename": "blue.jpg",
-      "Condition": "Memory",
-      "MemoryProbe": "Lure",
-      "ExpressionIntensity": 12,
-      "TestImage": "no",
-      "ActorGender": "shape",
-      "ActorRace": "circle",
-      "ActorID": "blue",
-      "FacialExpression1": "neutral",
-      "FacialExpression2": "happy_closed",
-      "Block": 1
-    },
-    {
-      "TrialNumber": 1,
-      "EncodedImage": "yes",
-      "Directory": "img/testimgs/",
-      "Filename": "test4.jpg",
-      "Condition": "Memory",
-      "MemoryProbe": "Lure",
-      "ExpressionIntensity": 1,
-      "TestImage": "yes",
-      "ActorGender": "Female",
-      "ActorRace": "Other",
-      "ActorID": "test4",
-      "FacialExpression1": "neutral",
-      "FacialExpression2": "happy_closed",
-      "Block": 1
-    },
-    {
-      "TrialNumber": 1,
-      "EncodedImage": "yes",
-      "Directory": "img/testimgs/",
-      "Filename": "test5.jpg",
-      "Condition": "Memory",
-      "MemoryProbe": "Lure",
-      "ExpressionIntensity": 2,
-      "TestImage": "yes",
-      "ActorGender": "Male",
-      "ActorRace": "Caucasian",
-      "ActorID": "test5",
-      "FacialExpression1": "neutral",
-      "FacialExpression2": "happy_closed",
-      "Block": 1
-    }
-  ]
+  {
+    "StimID": 1,
+    "Directory": "image_examples/",
+    "ImageName": "People_101_h_",
+    "TrialNumber": 1,
+    "Block": 1,
+    "StartLevel": 4,
+    "Phase": "Study",
+    "ImgType": ".png"
+  },
+  {
+    "StimID": 2,
+    "Directory": "image_examples/",
+    "ImageName": "People_157_h_",
+    "TrialNumber": 2,
+    "Block": 1,
+    "StartLevel": 9,
+    "Phase": "Study",
+    "ImgType": ".png"
+  },
+  {
+    "StimID": 3,
+    "Directory": "image_examples/",
+    "ImageName": "People_177_h_",
+    "TrialNumber": 3,
+    "Block": 1,
+    "StartLevel": 2,
+    "Phase": "Study",
+    "ImgType": ".png"
+  },
+  {
+    "StimID": 4,
+    "Directory": "image_examples/",
+    "ImageName": "Coco_",
+    "TrialNumber": 4,
+    "Block": 1,
+    "StartLevel": 1,
+    "Phase": "Test",
+    "ImgType": ".png"
+  }
+]
 
 var test_stim = [
     {
-        "face" : "img/testimgs/test1.jpg",
+        "display" : "image_examples/People_101_h_4.png",
         // "bryanna" : "makumbi",
         // "zoe" : "ting",
         // "julia" : "swaitek",
         // "chloe" : "kardashian"
     },
     {
-        "face" : "img/testimgs/test2.jpg",
+      "display" : "image_examples/People_157_h_11.png",
         // "bryanna1" : "makumbi1",
         // "zoe1" : "ting1",
         // "julia1" : "swaitek1",
@@ -147,7 +58,7 @@ var test_stim = [
             
     },
     {
-        "face": "img/testimgs/test3.jpg",
+      "display" : "image_examples/People_177_h_1.png",
         // "bryanna2" : "makumbi2",
         // "zoe2" : "ting2",
         // "julia2" : "swaitek2",

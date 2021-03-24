@@ -38,58 +38,22 @@
                           " and your task is to remember the expression of each face.</p>" +
                           "<p>You will have 4 seconds to learn each face during the study phase.</p>" +
                           "<p>Press any key to continue.</p>",
-            },
-            /*example of expressions*/
-            {
-                type: 'html-keyboard-response',
-                stimulus: "<div style='float: left;'><img src='img/example.png'></img>"+
-                          "<p>Press any key to continue.</p>",
-            },
-
-            {
-                type: 'html-keyboard-response',
-                stimulus: "<p>We will then ask you to reconstruct the each face that you studied.<p>"+
-                          "<p>For some faces, you will be asked to reconstruct the face immediately after viewing it.<p>"+
-                          "<p>For other faces, you will be asked to reconstruct the face in a separate memory test phase"+
-                          " after you have learned a number of faces. This memory test will come at the end of each block."+
-                          "<p>In the memory test, there may be some new faces presented.<p>"+
-                          "<p>Press any key to continue.</p>",
-            },
-
-            {
-                type: 'html-keyboard-response',
-                stimulus: "<p>During the memory test phase only, you will also be asked to rate how vividly you remember that face"+
-                          " on a scale of 1 (I don't remember this face) to 6 (I remember this face very vividly).<p>"+
-                          "<p>Using the slider, make your response.<p>"+
-                          "<p>If you don't remember the face at all, select 1.<p>"+
-                          "<p>Press any key to continue.</p>",
             }
         ],
     }
     timeline.push(instructions);
 
-    // // Get image addresses for display
-    // Promise.all([
-    //   "TestData.csv"
-    // ].map(function(url) {
-    //   return fetch(url).then(function(response) {
-    //     return response.ok ? response.text() : Promise.reject(response.status);
-    //   }).then(function(text) {
-    //     return d3.csvParse(text);
-    //   });
-    // })).then(function(value) {
-    //   var first = value[0][0]
-    // })
+    var study_or_test = "Study"
 
 
     function get_stims(json){
       var listy = []
       for (var i = 0; i<json.length; i++){
         var stimuli_from_json = {
-          "face" : json[i].Directory + json[i].Filename,
+          "display" : json[i].Directory + json[i].ImageName + json[i].StartLevel + json[i].ImgType,
         };
         console.log(stimuli_from_json)
-        if (json[i].EncodedImage == "yes"){
+        if (json[i].Phase == study_or_test){
           listy.push(stimuli_from_json);
         }
       }
@@ -99,7 +63,7 @@
 
     var stims_json = get_stims(jsonfile);
 
-    /* Display faces for perception tests */
+    /* Display images for perception tests */
     var face_display_perception = {
         timeline: [
             {
@@ -112,7 +76,7 @@
             {
                 type: 'html-keyboard-response',
                 stimulus: function(){
-                    var html="<img src='"+jsPsych.timelineVariable('face', true)+"'>";
+                    var html="<img src='"+jsPsych.timelineVariable('display', true)+"'>";
                     return html;
                 },          
                 choices: jsPsych.NO_KEYS,
