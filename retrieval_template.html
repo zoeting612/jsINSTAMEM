@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>My experiment</title>
+    <script src="jspsych-6.1.0/jspsych.js"></script>
+    <script src="jspsych-6.1.0/plugins/jspsych-html-keyboard-response.js"></script>
+    <script src="jspsych-6.1.0/plugins/jspsych-image-keyboard-response.js"></script>
+    <script src="jspsych-6.1.0/plugins/jspsych-html-slider-response.js"></script>
+    <script src="jspsych-6.1.0/plugins/jspsych-image-slider-response.js"></script>
+    <script src="https://d3js.org/d3-dsv.v1.min.js"></script>
+    <link href="jspsych-6.1.0/css/jspsych.css" rel="stylesheet" type="text/css"></link>
+    <!-- <script type="text/javascript" src="index.js"></script> -->
+  </head>
+  <body></body>
+  <script>
+
+    /* create timeline */
+    var timeline = [];
+
+
+
+    /* define welcome message trial */
+    var welcome = {
+      type: "html-keyboard-response",
+      stimulus: "Welcome to the experiment. Press any key to begin."
+    };
+    timeline.push(welcome);
+
+
+    var slider_1 = {
+      type: 'html-slider-response',
+      stimulus: '<p>Running</p>',
+      labels: ['healthy', 'unhealthy'],
+      prompt: "<p>How healthy/unhealthy is this activity?</p>",
+      data:{trial_done: true}
+    };
+    timeline.push(slider_1);
+
+    var slider2_stim = [ 'img/testimgs/test1.jpg', 'img/testimgs/test2.jpg','img/testimgs/test3.jpg', 'img/testimgs/test4.jpg','img/testimgs/test5.jpg','img/testimgs/coci.jpg']
+    var n_loaded = 0;
+
+    jsPsych.pluginAPI.preloadImages(slider2_stim, function(){ testFunc(); }, function(file) { updateLoadedCount(file); });
+
+    function testFunc(){
+      console.log("done loading");
+    }
+
+    function updateLoadedCount(file){
+        n_loaded++;
+        var percentcomplete = n_loaded / slider2_stim.length * 100;
+        console.log('Loaded '+percentcomplete+'% of images');
+    }
+
+
+    var slider2 = {
+      type: 'image-slider-response',
+      stimulus: function(){
+        var slider_val = jsPsych.data.getLastTrialData().values()[0].slider_value;
+        var default_start = 60
+        if(!jsPsych.data.getLastTrialData().values()[0].trial_done){
+          var s_val = slider_val/20;
+        }
+        else{
+          var s_val = default_start/20;
+        }
+        return slider2_stim[s_val];
+      },
+      start: function(){
+        console.log(jsPsych.data.getLastTrialData().values()[0].trial_done)
+        if(!jsPsych.data.getLastTrialData().values()[0].trial_done){
+          return jsPsych.data.getLastTrialData().values()[0].slider_value;
+        }
+      },
+      changing_stim: true,
+      labels: ['0','1','2','3','4','5'],
+      prompt: "<p>How happy/sad is this person?</p>",
+      step: 20,
+      response_ends_trial: true,
+      render_on_canvas: true
+    };
+    timeline.push(slider2)
+
+    var loop_node = {
+        timeline: [slider2],
+        loop_function: function(data){
+            if(jsPsych.data.getLastTrialData().values()[0].trial_done){
+                return false;
+            } else {
+                return true;
+            }
+        }
+    }
+
+    timeline.push(loop_node);
+
+    /* start the experiment */
+    jsPsych.init({
+      timeline: timeline,
+      on_finish: function() {
+        jsPsych.data.displayData();
+      }
+    });
+  </script>
+  <script type="text/javascript">
+  </script>
+</html>
