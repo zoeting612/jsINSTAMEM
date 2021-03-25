@@ -98,19 +98,26 @@
     }
     timeline.push(pause_for_img_preload)
 
+    // how many steps on the slider for test phase
+    var num_steps = 12
+
     // function that returns list of stimulus objects with image paths for test phase 
     function get_stims_test(json){
       var big_listy = []
       for (var i = 0; i<json.length; i++){
-        for (var b = 0; b<json.length; b++){
-          var small_listy = []
+        var small_listy = []
+        for (var b = 1; b<num_steps+1; b++){
           var stimuli_from_json = {
             "display" : json[i].Directory + json[i].ImageName + b + json[i].ImgType
           };
           small_listy.push(stimuli_from_json)
+          console.log("hi")
+          console.log(small_listy)
+          console.log(stimuli_from_json)
         }
-        console.log(stimuli_from_json)
-        big_listy.push(small_listy)
+        if (json[i].Phase == "Study"){
+          big_listy.push(small_listy);
+        }
       }
       console.log(big_listy)
       return big_listy;
@@ -119,8 +126,8 @@
     // list of stimulus objects with image file paths ... contains embedded arrays of stimulus objects, one embedded array of all stimuli paths per tested image
     var slider_stim = get_stims_test(jsonfile)
     
-    // preload images 
-    var image_paths_for_preload =  function(){
+    // takes slider_stim and converts it into a one-dimentional array 
+    function image_paths_reconstruct_array(){
       var listylist = []
       for (var i = 0; i<slider_stim.length; i++){
         for (var b = 0; b<slider_stim[i].length; b++){
@@ -128,14 +135,18 @@
           console.log(slider_stim[i][b].display)
         }
       }
-      console.log(listylist)
       return listylist
     }
+
+    var image_paths_for_preload = image_paths_reconstruct_array();
+
+    // preload images 
     var n_loaded = 0;
     jsPsych.pluginAPI.preloadImages(image_paths_for_preload, function(){ testFunc(); }, function(file) { updateLoadedCount(file); });
 
     function testFunc(){
       console.log("done loading");
+      console.log(image_paths_for_preload)
     }
 
     function updateLoadedCount(file){
@@ -144,15 +155,52 @@
         console.log('Loaded '+percentcomplete+'% of images');
     }
 
-    // // test phase
-    // var slider2 = {
-    // type: 'image-slider-response',
-    // stimulus: 'img/testimgs/test1.jpg',
-    // labels: ['happy', 'sad'],
-    // prompt: "<p>How happy/sad is this person?</p>",
-    // response_ends_trial: false
-    // };
-    // timeline.push(slider2);
+    // test phase
+    var slider_step = 12
+    var slider_response = {
+      type: 'image-slider-response',
+      stimulus: function(){
+        var slider_val = jsPsych.data.getLastTrialData().values()[0].slider_value;
+        var default_start = 60
+        if(!jsPsych.data.getLastTrialData().values()[0].trial_done){
+          var s_val = slider_val/(100/slider_step);
+        }
+        else{
+          var s_val = default_start/(100/slider_step);
+        }
+        return image_paths_for_preload[s_val];
+      },
+      start: function(){
+        console.log(jsPsych.data.getLastTrialData().values()[0].trial_done)
+        if(!jsPsych.data.getLastTrialData().values()[0].trial_done){
+          return jsPsych.data.getLastTrialData().values()[0].slider_value;
+        }
+      },
+      changing_stim: true,
+      labels: function(){
+        var labels_list = []
+        for (var i = 1; i < slider_step+1; i++){
+          labels_list.push()
+        }
+      },
+      prompt: "<p>How happy/sad is this person?</p>",
+      step: 100/slider_step,
+      response_ends_trial: true,
+      render_on_canvas: true
+    };
+    timeline.push(slider_response)
+
+    var loop_node = {
+        timeline: [slider_response],
+        loop_function: function(data){
+            if(jsPsych.data.getLastTrialData().values()[0].trial_done){
+                return false;
+            } else {
+                return true;
+            }
+        }
+    }
+    timeline.push(loop_node);
 
     /* start the experiment */
     jsPsych.init({
