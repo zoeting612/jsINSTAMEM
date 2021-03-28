@@ -92,7 +92,8 @@
                 type: 'html-keyboard-response',
                 stimulus: 'TEST PHASE',
                 choices: jsPsych.NO_KEYS,
-                trial_duration: 1000
+                trial_duration: 1000,
+                data:{trial_done: true}
             }
         ]
     }
@@ -157,18 +158,61 @@
 
     // test phase
     var slider_step = 12
+    var counter = 0
+
+    function shuffle(array) {
+      var currentIndex = array.length, temporaryValue, randomIndex;
+
+      // While there remain elements to shuffle...
+      while (0 !== currentIndex) {
+
+        // Pick a remaining element...
+        randomIndex = Math.floor(Math.random() * currentIndex);
+        currentIndex -= 1;
+
+        // And swap it with the current element.
+        temporaryValue = array[currentIndex];
+        array[currentIndex] = array[randomIndex];
+        array[randomIndex] = temporaryValue;
+      }
+
+      return array;
+    }
+
+    function image_paths_for_test (l1){
+      var list_of_paths = [];
+      var count = 0;
+      for (var i = 0; i < slider_stim.length; i++){
+         var small_list = []
+        for (var b = 0; b < slider_step; b++){
+          small_list.push(l1[count]);
+          count ++;
+        }
+        list_of_paths.push(small_list);
+      }
+      var shuffled_list = shuffle(list_of_paths);
+      console.log("shuffled list")
+      console.log(shuffled_list)
+      return list_of_paths;
+    }
+
+    var paths_for_test_phase = image_paths_for_test(image_paths_for_preload);
+
     var slider_response = {
       type: 'image-slider-response',
       stimulus: function(){
         var slider_val = jsPsych.data.getLastTrialData().values()[0].slider_value;
         var default_start = 60
         if(!jsPsych.data.getLastTrialData().values()[0].trial_done){
-          var s_val = slider_val/(100/slider_step);
+          var s_val = parseInt(slider_val/parseInt(100/slider_step,10),10);
         }
         else{
-          var s_val = default_start/(100/slider_step);
+          var s_val = parseInt(default_start/parseInt(100/slider_step,10),10);
         }
-        return image_paths_for_preload[s_val];
+        console.log("test1")
+        console.log(jsPsych.data.getLastTrialData().values()[0].trial_done)
+        console.log(paths_for_test_phase[counter][s_val])
+        return paths_for_test_phase[counter][s_val];
       },
       start: function(){
         console.log(jsPsych.data.getLastTrialData().values()[0].trial_done)
@@ -182,25 +226,41 @@
         for (var i = 1; i < slider_step+1; i++){
           labels_list.push()
         }
+        console.log("labels list")
+        console.log(labels_list)
+        return labels_list
       },
       prompt: "<p>How happy/sad is this person?</p>",
       step: 100/slider_step,
       response_ends_trial: true,
       render_on_canvas: true
     };
-    timeline.push(slider_response)
 
     var loop_node = {
         timeline: [slider_response],
         loop_function: function(data){
             if(jsPsych.data.getLastTrialData().values()[0].trial_done){
-                return false;
-            } else {
-                return true;
+              return false;
+            } 
+            else {
+              return true;
             }
         }
     }
-    timeline.push(loop_node);
+
+    var loop_trial = {
+        timeline: [loop_node],
+        loop_function: function(data){
+            if(counter < slider_stim.length){
+              counter++
+              return true;
+            } 
+            else {
+              return false;
+            }
+        }
+    }
+    timeline.push(loop_trial);
 
     /* start the experiment */
     jsPsych.init({
