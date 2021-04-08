@@ -204,14 +204,13 @@
         var slider_val = jsPsych.data.getLastTrialData().values()[0].slider_value;
         var default_start = 60
         if(!jsPsych.data.getLastTrialData().values()[0].trial_done){
-          var s_val = parseInt(slider_val/parseInt(100/slider_step,10),10);
+          var s_val = parseInt((slider_val/(100/slider_step-1))+1,10);
         }
         else{
-          var s_val = parseInt(default_start/parseInt(100/slider_step,10),10);
+          var s_val = parseInt((default_start/(100/slider_step-1))+1,10);
         }
         console.log("test1")
-        console.log(jsPsych.data.getLastTrialData().values()[0].trial_done)
-        console.log(paths_for_test_phase[counter][s_val])
+        console.log(s_val)
         return paths_for_test_phase[counter][s_val];
       },
       start: function(){
@@ -224,10 +223,11 @@
       labels: function(){
         var labels_list = []
         for (var i = 1; i < slider_step+1; i++){
-          labels_list.push()
+          labels_list.push(i)
         }
         console.log("labels list")
         console.log(labels_list)
+        console.log (slider_step)
         return labels_list
       },
       prompt: "<p>How happy/sad is this person?</p>",
