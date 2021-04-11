@@ -7,6 +7,7 @@
     <script src="jspsych-6.1.0/plugins/jspsych-image-keyboard-response.js"></script>
     <script src="jspsych-6.1.0/plugins/jspsych-html-slider-response.js"></script>
     <script src="jspsych-6.1.0/plugins/jspsych-image-slider-response.js"></script>
+    <script src="jspsych-6.1.0/plugins/jspsych-image-slider-response-changestim.js"></script>
     <script src="https://d3js.org/d3-dsv.v1.min.js"></script>
     <script src = "json_test.js"></script>
     <link href="jspsych-6.1.0/css/jspsych.css" rel="stylesheet" type="text/css"></link>
@@ -199,7 +200,7 @@
     var paths_for_test_phase = image_paths_for_test(image_paths_for_preload);
 
     var slider_response = {
-      type: 'image-slider-response',
+      type: 'image-slider-response-changestim',
       stimulus: function(){
         var slider_val = jsPsych.data.getLastTrialData().values()[0].slider_value;
         var default_start = 60
