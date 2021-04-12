@@ -121,7 +121,7 @@
           big_listy.push(small_listy);
         }
       }
-      console.log(big_listy)
+      // console.log(big_listy)
       return big_listy;
     }
 
@@ -134,7 +134,7 @@
       for (var i = 0; i<slider_stim.length; i++){
         for (var b = 0; b<slider_stim[i].length; b++){
           listylist.push(slider_stim[i][b].display)
-          console.log(slider_stim[i][b].display)
+          // console.log(slider_stim[i][b].display)
         }
       }
       return listylist
@@ -147,14 +147,14 @@
     jsPsych.pluginAPI.preloadImages(image_paths_for_preload, function(){ testFunc(); }, function(file) { updateLoadedCount(file); });
 
     function testFunc(){
-      console.log("done loading");
-      console.log(image_paths_for_preload)
+      // console.log("done loading");
+      // console.log(image_paths_for_preload)
     }
 
     function updateLoadedCount(file){
         n_loaded++;
         var percentcomplete = n_loaded / image_paths_for_preload.length * 100;
-        console.log('Loaded '+percentcomplete+'% of images');
+        // console.log('Loaded '+percentcomplete+'% of images');
     }
 
     // test phase
@@ -192,8 +192,8 @@
         list_of_paths.push(small_list);
       }
       var shuffled_list = shuffle(list_of_paths);
-      console.log("shuffled list")
-      console.log(shuffled_list)
+      // console.log("shuffled list")
+      // console.log(shuffled_list)
       return list_of_paths;
     }
 
@@ -205,12 +205,12 @@
         var slider_val = jsPsych.data.getLastTrialData().values()[0].slider_value;
         var default_start = 60
         if(!jsPsych.data.getLastTrialData().values()[0].trial_done){
-          var s_val = parseInt((slider_val/(100/slider_step-1))+1,10);
+          var s_val = Math.round(((slider_val/100)*(slider_step-1))+1);
         }
         else{
-          var s_val = parseInt((default_start/(100/slider_step-1))+1,10);
+          var s_val = Math.round(((default_start/100)*(slider_step-1))+1);
         }
-        console.log("test1")
+        console.log("slider value:")
         console.log(s_val)
         return paths_for_test_phase[counter][s_val];
       },
@@ -226,13 +226,13 @@
         for (var i = 1; i < slider_step+1; i++){
           labels_list.push(i)
         }
-        console.log("labels list")
-        console.log(labels_list)
-        console.log (slider_step)
+        // console.log("labels list")
+        // console.log(labels_list)
+        // console.log (slider_step)
         return labels_list
       },
       prompt: "<p>How happy/sad is this person?</p>",
-      step: 100/slider_step,
+      step: 100/(slider_step-1),
       response_ends_trial: true,
       render_on_canvas: true
     };
